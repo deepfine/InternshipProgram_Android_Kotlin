@@ -7,6 +7,10 @@
 
     <!--  SearchUserFragment  -->
     <string name="suf_search_guide">여기에 입력하세요.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <!--  : 출력용  -->
+    <string name="name">이름 :\u00a0</string>
+    <string name="company">소속 :\u00a0</string>
+    <string name="email">이메일 :\u00a0</string>
 </resources>
