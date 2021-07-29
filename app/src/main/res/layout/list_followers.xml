@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="listFollowers"
+            type="mjc.woo.internprojectkotlin.databinding.ListFollowersBindingImpl" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/profile_imgview"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_id"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="20dp"
+                android:layout_weight="4"
+                android:gravity="center_vertical"
+                android:text="New Text"
+                android:textColor="#000000"
+                android:textSize="13sp"
+                tools:ignore="NestedWeights" />
+
+        </LinearLayout>
+
+        <ImageView
+
+            android:id="@+id/btn_favorites"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/favorites_start_none" />
+
+    </LinearLayout>
+</layout>
