@@ -8,6 +8,13 @@
     <!--  SearchUserFragment  -->
     <string name="suf_search_guide">여기에 입력하세요.</string>
 
+    <!--  UserDetailActivity -->
+    <string name="detail">상세정보</string>
+    <string name="noData">결과 없음</string>
+    <string name="noName">이름 없음</string>
+    <string name="followers">Followers\u00a0</string>
+    <string name="following">Following\u00a0</string>
+    <string name="followersListTitle">Followers</string>
 
     <!--  : 출력용  -->
     <string name="name">이름 :\u00a0</string>
