@@ -1,6 +1,6 @@
 package mjc.woo.internprojectkotlin.jsonclass
 
-data class UserDetail(
+data class UserDetailJSON(
     val avatar_url: String,
     val bio: Any,
     val blog: String,
@@ -8,9 +8,9 @@ data class UserDetail(
     val created_at: String,
     val email: String,
     val events_url: String,
-    val followers: Int,
+    val followers: String,
     val followers_url: String,
-    val following: Int,
+    val following: String,
     val following_url: String,
     val gists_url: String,
     val gravatar_id: String,

@@ -9,16 +9,17 @@ import android.widget.BaseAdapter
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
 import mjc.woo.internprojectkotlin.R
-import mjc.woo.internprojectkotlin.databinding.ListMainBinding
-import mjc.woo.internprojectkotlin.item.SearchUserItem
+import mjc.woo.internprojectkotlin.databinding.ListFollowersBinding
+import mjc.woo.internprojectkotlin.item.FollowersItem
 
-class SearchUserListAdapter(
-    private val items: MutableList<SearchUserItem>,
+class FollowersListAdapter(
+    private val items: MutableList<FollowersItem>,
     private val activity: Activity
 ) : BaseAdapter() {
-    private lateinit var binding: ListMainBinding
+    private lateinit var binding: ListFollowersBinding
     private val pref: SharedPreferences = activity.getSharedPreferences("key", 0)
     private val editor: SharedPreferences.Editor = pref.edit()
+
 
     override fun getCount(): Int = items.size
 
@@ -32,20 +33,17 @@ class SearchUserListAdapter(
         if (convertView == null) {
             binding = DataBindingUtil.inflate(
                 LayoutInflater.from(activity),
-                R.layout.list_main,
+                R.layout.list_followers,
                 parent,
                 false
             )
             convertView = binding.root
         }
 
-        val item: SearchUserItem = items[position]
+        val item: FollowersItem = items[position]
 
         Glide.with(activity).load(item.userImgURL).into(binding.profileImgview)
         binding.tvId.text = item.userID
-        binding.tvName.text = activity.getString(R.string.name).plus(item.userName)
-        binding.tvEmail.text = activity.getString(R.string.email).plus(item.userEmail)
-        binding.tvCompany.text = activity.getString(R.string.company).plus(item.userCompany)
 
         if (pref.getBoolean(item.userID, false))
             binding.btnFavorites.setImageResource(R.drawable.favorites_start_check)
@@ -56,12 +54,14 @@ class SearchUserListAdapter(
             if (pref.getBoolean(item.userID, false)) {
                 binding.btnFavorites.setImageResource(R.drawable.favorites_start_none)
                 editor.putBoolean(item.userID, false)
+                editor.remove(item.userID)
             } else {
                 binding.btnFavorites.setImageResource(R.drawable.favorites_start_check)
                 editor.putBoolean(item.userID, true)
             }
             editor.apply()
         }
+
 
         return convertView
     }

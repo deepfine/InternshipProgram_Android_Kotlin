@@ -1,6 +1,7 @@
 package mjc.woo.internprojectkotlin.api
 
-import mjc.woo.internprojectkotlin.jsonclass.UserDetail
+import mjc.woo.internprojectkotlin.jsonclass.UserDetailJSON
+import mjc.woo.internprojectkotlin.jsonclass.UserFollowersJSON
 import mjc.woo.internprojectkotlin.jsonclass.UsersListJSON
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -16,13 +17,21 @@ class GitHubApi {
 }
 
 interface SearchUsers{
+//    @Headers("Authorization: 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")
     @GET("search/users")
     fun getPost(@Query("q") keyword: String, @Query("per_page") post2: Int) : Call<UsersListJSON>
 }
 
 interface UserData{
+//    @Headers("Authorization: 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")
     @GET("users/{id}")
-    fun getPost(@Path("id") keyword: String) : Call<UserDetail>
+    fun getPost(@Path("id") keyword: String) : Call<UserDetailJSON>
+}
+
+interface UserFollower{
+//    @Headers("Authorization: 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")
+    @GET("users/{id}/followers")
+    fun getPost(@Path("id") keyword: String) : Call<UserFollowersJSON>
 }
 
 object SearchUsersRetrofitClient{
@@ -44,5 +53,16 @@ object UserDetailRetrofitClient{
     }
     val userDetail: UserData by lazy{
         retrofitClient.build().create(UserData::class.java)
+    }
+}
+
+object UserFollowersRetrofitClient{
+    private val retrofitClient: Retrofit.Builder by lazy{
+        Retrofit.Builder()
+            .baseUrl(GitHubApi.DOMAIN)
+            .addConverterFactory(GsonConverterFactory.create())
+    }
+    val userFollower: UserFollower by lazy{
+        retrofitClient.build().create(UserFollower::class.java)
     }
 }
