@@ -6,17 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
 import mjc.woo.internprojectkotlin.R
-import mjc.woo.internprojectkotlin.databinding.ListFollowersBinding
+import mjc.woo.internprojectkotlin.ViewHolder
 import mjc.woo.internprojectkotlin.item.FollowersItem
 
 class FollowersListAdapter(
     private val items: MutableList<FollowersItem>,
     private val activity: Activity
 ) : BaseAdapter() {
-    private lateinit var binding: ListFollowersBinding
     private val pref: SharedPreferences = activity.getSharedPreferences("key", 0)
     private val editor: SharedPreferences.Editor = pref.edit()
 
@@ -27,42 +25,46 @@ class FollowersListAdapter(
 
     override fun getItemId(position: Int): Long = position.toLong()
 
-    override fun getView(position: Int, view: View?, parent: ViewGroup?): View {
-        var convertView = view
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        val view: View
+        val holder: ViewHolder
 
         if (convertView == null) {
-            binding = DataBindingUtil.inflate(
-                LayoutInflater.from(activity),
-                R.layout.list_followers,
-                parent,
-                false
-            )
-            convertView = binding.root
+            view = LayoutInflater.from(activity).inflate(R.layout.list_followers, parent, false)
+
+            holder = ViewHolder()
+            holder.favBtn = view.findViewById(R.id.btn_favorites)
+            holder.userId = view.findViewById(R.id.tv_id)
+            holder.userImg = view.findViewById(R.id.profile_imgview)
+
+            view.tag = holder
+        } else{
+            holder = convertView.tag as ViewHolder
+            view = convertView
         }
 
         val item: FollowersItem = items[position]
 
-        Glide.with(activity).load(item.userImgURL).into(binding.profileImgview)
-        binding.tvId.text = item.userID
+        Glide.with(activity).load(item.userImgURL).into(holder.userImg)
+        holder.userId!!.text = item.userID
 
         if (pref.getBoolean(item.userID, false))
-            binding.btnFavorites.setImageResource(R.drawable.favorites_start_check)
+            holder.favBtn!!.setImageResource(R.drawable.favorites_start_check)
         else
-            binding.btnFavorites.setImageResource(R.drawable.favorites_start_none)
+            holder.favBtn!!.setImageResource(R.drawable.favorites_start_none)
 
-        binding.btnFavorites.setOnClickListener {
+        holder.favBtn!!.setOnClickListener {
             if (pref.getBoolean(item.userID, false)) {
-                binding.btnFavorites.setImageResource(R.drawable.favorites_start_none)
+                holder.favBtn!!.setImageResource(R.drawable.favorites_start_none)
                 editor.putBoolean(item.userID, false)
                 editor.remove(item.userID)
             } else {
-                binding.btnFavorites.setImageResource(R.drawable.favorites_start_check)
+                holder.favBtn!!.setImageResource(R.drawable.favorites_start_check)
                 editor.putBoolean(item.userID, true)
             }
             editor.apply()
         }
 
-
-        return convertView
+        return view
     }
 }
