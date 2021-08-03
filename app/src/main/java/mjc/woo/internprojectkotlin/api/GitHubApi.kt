@@ -7,6 +7,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -17,19 +18,19 @@ class GitHubApi {
 }
 
 interface SearchUsers{
-//    @Headers("Authorization: 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")
+    @Headers("Authorization: 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")
     @GET("search/users")
     fun getPost(@Query("q") keyword: String, @Query("per_page") post2: Int) : Call<UsersListJSON>
 }
 
 interface UserData{
-//    @Headers("Authorization: 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")
+    @Headers("Authorization: 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")
     @GET("users/{id}")
     fun getPost(@Path("id") keyword: String) : Call<UserDetailJSON>
 }
 
 interface UserFollower{
-//    @Headers("Authorization: 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")
+    @Headers("Authorization: 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")
     @GET("users/{id}/followers")
     fun getPost(@Path("id") keyword: String) : Call<UserFollowersJSON>
 }

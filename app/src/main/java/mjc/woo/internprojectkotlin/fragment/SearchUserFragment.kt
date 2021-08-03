@@ -37,9 +37,9 @@ class SearchUserFragment : Fragment() {
 
         binding.searchBtn.setOnClickListener {
             val keyword: String = binding.searchKeyWordEdt.text.toString()
-            if (keyword == ""){
+            if (keyword == "") {
                 Toast.makeText(context, "검색할 아이디를 입력해주세요", Toast.LENGTH_SHORT).show()
-            } else{
+            } else {
                 getSearchUsers(keyword)
             }
         }
@@ -49,7 +49,6 @@ class SearchUserFragment : Fragment() {
             intent.putExtra("userId", adapter!!.getItem(position))
             startActivity(intent)
         }
-
         return view
     }
 
@@ -88,10 +87,9 @@ class SearchUserFragment : Fragment() {
         }.start()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
 
-        if (adapter != null)
-            adapter!!.notifyDataSetChanged()
+        adapter?.notifyDataSetChanged()
     }
 }

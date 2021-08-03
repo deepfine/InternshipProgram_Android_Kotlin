@@ -3,6 +3,7 @@ package mjc.woo.internprojectkotlin.activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
@@ -32,7 +33,7 @@ class UserDetailActivity : AppCompatActivity() {
 
         val userID = intent.getStringExtra("userId")
 
-        getUserDetail(userID!!)
+        userID?.let { getUserDetail(it) }
 
         binding.btnFavorites.setOnClickListener {
             if (pref.getBoolean(userID, false)) {
@@ -81,20 +82,18 @@ class UserDetailActivity : AppCompatActivity() {
                 binding.tvName.text = usersData.name
                 binding.tvFollowers.text = getString(R.string.followers).plus(usersData.followers)
                 binding.tvFollowing.text = getString(R.string.following).plus(usersData.following)
-                binding.tvCompany.text = usersData.company
-                binding.tvEmail.text = usersData.email
+                usersData.company.let { binding.tvCompany.text = usersData.company }
+                usersData.email.let { binding.tvEmail.text = usersData.email }
 
                 adapter = FollowersListAdapter(items, this)
                 binding.followersUserList.adapter = adapter
+
+                if(Integer.parseInt(usersData.followers) > 0){
+                    binding.noFollowersText.visibility = View.GONE
+                }
             }
 
         }.start()
-    }
 
-    override fun onResume() {
-        super.onResume()
-
-        if (adapter != null)
-            adapter!!.notifyDataSetChanged()
     }
 }
