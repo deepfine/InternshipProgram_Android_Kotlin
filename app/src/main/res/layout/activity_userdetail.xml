@@ -3,6 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="activity"
+            type="mjc.woo.internprojectkotlin.activity.UserDetailActivity" />
+
+        <variable
+            name="userData"
+            type="mjc.woo.internprojectkotlin.UserDetailText" />
+    </data>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -48,8 +58,10 @@
                         android:id="@+id/btn_favorites"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        app:imgSrc="@{activity.srcId}"
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="20dp"
+                        android:onClick="@{() -> activity.favoriteBtnClick()}"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -68,6 +80,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:text="@{userData.userId}"
                         android:textSize="20sp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -78,7 +91,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="@string/noName"
+                        android:text="@{userData.userName}"
                         android:textSize="15sp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -89,6 +102,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
+                        android:text="@{userData.userFollowers}"
                         android:textSize="13sp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -99,6 +113,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:text="@{userData.userFollowing}"
                         android:textSize="13sp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -127,7 +142,7 @@
                                 android:id="@+id/tv_company"
                                 android:layout_width="200dp"
                                 android:layout_height="wrap_content"
-                                android:text="@string/noData" />
+                                android:text="@{userData.userCompany}" />
                         </TableRow>
 
                         <TableRow android:layout_margin="5dp">
@@ -141,7 +156,7 @@
                                 android:id="@+id/tv_email"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/noData" />
+                                android:text="@{userData.userEmail}" />
                         </TableRow>
                     </TableLayout>
 
@@ -174,6 +189,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/noFollowers"
                         android:textSize="20sp"
+                        android:visibility="@{activity.followerVisibility}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"

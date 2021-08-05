@@ -24,6 +24,7 @@ class SearchUserFragment : Fragment() {
     private var adapter: SearchUserListAdapter? = null
     private var items = mutableListOf<SearchUserItem>()
 
+
     // 최대 검색 유저 수
     private val maxSearchCount = 5
 
@@ -34,19 +35,11 @@ class SearchUserFragment : Fragment() {
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_user, container, false)
         val view: View = binding.root
-
-        binding.searchBtn.setOnClickListener {
-            val keyword: String = binding.searchKeyWordEdt.text.toString()
-            if (keyword == "") {
-                Toast.makeText(context, "검색할 아이디를 입력해주세요", Toast.LENGTH_SHORT).show()
-            } else {
-                getSearchUsers(keyword)
-            }
-        }
+        binding.activity = this
 
         binding.searchUserList.setOnItemClickListener { _, _, position, _ ->
             val intent = Intent(context, UserDetailActivity::class.java)
-            intent.putExtra("userId", adapter!!.getItem(position))
+            intent.putExtra("userId", adapter?.getItem(position))
             startActivity(intent)
         }
         return view
@@ -63,28 +56,39 @@ class SearchUserFragment : Fragment() {
                 callUserSearch.getPost(keyword, maxSearchCount).execute().body()!!
             val userItem: List<Item> = users.items
 
-
-            for (i in userItem.indices) {
-                val usersData: UserDetailJSON =
-                    callUserDetail.getPost(userItem[i].login).execute().body()!!
-                items.add(
-                    SearchUserItem(
-                        userItem[i].login,
-                        userItem[i].avatar_url,
-                        usersData.name ?: "-",
-                        usersData.email ?: "-",
-                        usersData.company ?: "-"
+            if (users.total_count == 0) {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(context, "검색된 유저가 없습니다.", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                for (i in userItem.indices) {
+                    val usersData: UserDetailJSON =
+                        callUserDetail.getPost(userItem[i].login).execute().body()!!
+                    items.add(
+                        SearchUserItem(
+                            userItem[i].login,
+                            userItem[i].avatar_url,
+                            usersData.name ?: "-",
+                            usersData.email ?: "-",
+                            usersData.company ?: "-"
+                        )
                     )
-                )
+                }
+                requireActivity().runOnUiThread {
+                    adapter = SearchUserListAdapter(items, requireActivity())
+                    binding.searchUserList.adapter = adapter
+                }
             }
-
-            requireActivity().runOnUiThread {
-                adapter = SearchUserListAdapter(items, requireActivity())
-                binding.searchUserList.adapter = adapter
-            }
-
-
         }.start()
+    }
+
+    fun clickSearchBtn() {
+        val keyword: String = binding.searchKeyWordEdt.text.toString()
+        if (keyword == "") {
+            Toast.makeText(context, "검색할 아이디를 입력해주세요", Toast.LENGTH_SHORT).show()
+        } else {
+            getSearchUsers(keyword)
+        }
     }
 
     override fun onStart() {
