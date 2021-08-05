@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.bumptech.glide.Glide
 import mjc.woo.internprojectkotlin.R
-import mjc.woo.internprojectkotlin.ViewHolder
 import mjc.woo.internprojectkotlin.item.SearchUserItem
 
 class SearchUserListAdapter(
@@ -48,10 +47,10 @@ class SearchUserListAdapter(
         val item: SearchUserItem = items[position]
 
         Glide.with(activity).load(item.userImgURL).into(holder.userImg)
-        holder.userId!!.text = item.userID
-        holder.userName!!.text = activity.getString(R.string.name).plus(item.userName)
-        holder.userEmail!!.text = activity.getString(R.string.email).plus(item.userEmail)
-        holder.userCompany!!.text = activity.getString(R.string.company).plus(item.userCompany)
+        holder.userId?.text = item.userID
+        holder.userName?.text = activity.getString(R.string.name).plus(item.userName)
+        holder.userEmail?.text = activity.getString(R.string.email).plus(item.userEmail)
+        holder.userCompany?.text = activity.getString(R.string.company).plus(item.userCompany)
 
         if (pref.getBoolean(item.userID, false))
             holder.favBtn?.setImageResource(R.drawable.favorites_start_check)

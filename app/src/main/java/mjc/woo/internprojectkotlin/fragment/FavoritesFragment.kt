@@ -37,7 +37,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
         binding.favoritesList.setOnItemClickListener { _, _, position, _ ->
             val intent = Intent(requireContext(), UserDetailActivity::class.java)
-            intent.putExtra("userId", adapter!!.getItem(position))
+            intent.putExtra("userId", adapter?.getItem(position))
             startActivity(intent)
         }
 
@@ -74,7 +74,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         super.onResume()
 
         if (adapter != null)
-            adapter!!.notifyDataSetChanged()
+            adapter?.notifyDataSetChanged()
     }
 }
 
