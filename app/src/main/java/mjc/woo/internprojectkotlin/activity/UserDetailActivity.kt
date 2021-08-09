@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
 import mjc.woo.internprojectkotlin.R
+import mjc.woo.internprojectkotlin.UserDetailText
 import mjc.woo.internprojectkotlin.adapter.FollowersListAdapter
 import mjc.woo.internprojectkotlin.api.UserDetailRetrofitClient
 import mjc.woo.internprojectkotlin.api.UserFollowersRetrofitClient
@@ -20,36 +21,27 @@ class UserDetailActivity : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var binding: ActivityUserdetailBinding
-    private var adapter: FollowersListAdapter? = null
     private var items = mutableListOf<FollowersItem>()
+    private var adapter: FollowersListAdapter? = null
+
+    var userID: String? = null
+    var srcId: Int? = null
+    var followerVisibility: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_userdetail)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_userdetail)
+        binding.activity = this
 
         pref = getSharedPreferences("key", 0)
         editor = pref.edit()
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_userdetail)
 
-        val userID = intent.getStringExtra("userId")
-
+        userID = intent.getStringExtra("userId")
         userID?.let { getUserDetail(it) }
-
-        binding.btnFavorites.setOnClickListener {
-            if (pref.getBoolean(userID, false)) {
-                binding.btnFavorites.setImageResource(R.drawable.favorites_start_none)
-                editor.putBoolean(userID, false)
-                editor.remove(userID)
-            } else {
-                binding.btnFavorites.setImageResource(R.drawable.favorites_start_check)
-                editor.putBoolean(userID, true)
-            }
-            editor.apply()
-        }
 
         binding.followersUserList.setOnItemClickListener { _, _, position, _ ->
             val intent = Intent(this, UserDetailActivity::class.java)
-            intent.putExtra("userId", adapter!!.getItem(position))
+            intent.putExtra("userId", adapter?.getItem(position))
             startActivity(intent)
         }
     }
@@ -58,10 +50,10 @@ class UserDetailActivity : AppCompatActivity() {
         val callUserDetail = UserDetailRetrofitClient.userDetail
         val callUserFollower = UserFollowersRetrofitClient.userFollower
 
-        if (pref.getBoolean(userID, false))
-            binding.btnFavorites.setImageResource(R.drawable.favorites_start_check)
+        srcId = if (pref.getBoolean(userID, false))
+            R.drawable.favorites_start_check
         else
-            binding.btnFavorites.setImageResource(R.drawable.favorites_start_none)
+            R.drawable.favorites_start_none
 
         Thread {
             val usersData: UserDetailJSON =
@@ -78,22 +70,39 @@ class UserDetailActivity : AppCompatActivity() {
             runOnUiThread {
                 Glide.with(applicationContext).load(usersData.avatar_url)
                     .into(binding.profileImgview)
-                binding.tvId.text = usersData.login
-                binding.tvName.text = usersData.name
-                binding.tvFollowers.text = getString(R.string.followers).plus(usersData.followers)
-                binding.tvFollowing.text = getString(R.string.following).plus(usersData.following)
-                usersData.company.let { binding.tvCompany.text = usersData.company }
-                usersData.email.let { binding.tvEmail.text = usersData.email }
+
+                binding.userData = UserDetailText(
+                    usersData.login,
+                    usersData.name,
+                    usersData.company,
+                    usersData.email,
+                    usersData.followers,
+                    usersData.following,
+                    this
+                    )
 
                 adapter = FollowersListAdapter(items, this)
                 binding.followersUserList.adapter = adapter
 
                 if(Integer.parseInt(usersData.followers) > 0){
-                    binding.noFollowersText.visibility = View.GONE
+                    followerVisibility = View.GONE
                 }
+
+                binding.invalidateAll()
             }
 
         }.start()
+    }
 
+    fun favoriteBtnClick() {
+        if (pref.getBoolean(userID, false)) {
+            binding.btnFavorites.setImageResource(R.drawable.favorites_start_none)
+            editor.putBoolean(userID, false)
+            editor.remove(userID)
+        } else {
+            binding.btnFavorites.setImageResource(R.drawable.favorites_start_check)
+            editor.putBoolean(userID, true)
+        }
+        editor.apply()
     }
 }

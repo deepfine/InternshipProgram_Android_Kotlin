@@ -1,4 +1,4 @@
-package mjc.woo.internprojectkotlin
+package mjc.woo.internprojectkotlin.adapter
 
 import android.widget.ImageView
 import android.widget.TextView

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.bumptech.glide.Glide
 import mjc.woo.internprojectkotlin.R
-import mjc.woo.internprojectkotlin.ViewHolder
 import mjc.woo.internprojectkotlin.item.FollowersItem
 
 class FollowersListAdapter(
@@ -46,20 +45,20 @@ class FollowersListAdapter(
         val item: FollowersItem = items[position]
 
         Glide.with(activity).load(item.userImgURL).into(holder.userImg)
-        holder.userId!!.text = item.userID
+        holder.userId?.text = item.userID
 
         if (pref.getBoolean(item.userID, false))
-            holder.favBtn!!.setImageResource(R.drawable.favorites_start_check)
+            holder.favBtn?.setImageResource(R.drawable.favorites_start_check)
         else
-            holder.favBtn!!.setImageResource(R.drawable.favorites_start_none)
+            holder.favBtn?.setImageResource(R.drawable.favorites_start_none)
 
-        holder.favBtn!!.setOnClickListener {
+        holder.favBtn?.setOnClickListener {
             if (pref.getBoolean(item.userID, false)) {
-                holder.favBtn!!.setImageResource(R.drawable.favorites_start_none)
+                holder.favBtn?.setImageResource(R.drawable.favorites_start_none)
                 editor.putBoolean(item.userID, false)
                 editor.remove(item.userID)
             } else {
-                holder.favBtn!!.setImageResource(R.drawable.favorites_start_check)
+                holder.favBtn?.setImageResource(R.drawable.favorites_start_check)
                 editor.putBoolean(item.userID, true)
             }
             editor.apply()
