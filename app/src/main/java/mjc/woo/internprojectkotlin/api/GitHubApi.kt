@@ -1,5 +1,6 @@
 package mjc.woo.internprojectkotlin.api
 
+import mjc.woo.internprojectkotlin.jsonclass.RateLimitJSON
 import mjc.woo.internprojectkotlin.jsonclass.UserDetailJSON
 import mjc.woo.internprojectkotlin.jsonclass.UserFollowersJSON
 import mjc.woo.internprojectkotlin.jsonclass.UsersListJSON
@@ -12,58 +13,75 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 class GitHubApi {
-    companion object{
+    companion object {
         const val DOMAIN = "https://api.github.com/"
     }
 }
 
-interface SearchUsers{
+interface SearchUsers {
     @Headers("Authorization: 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")
     @GET("search/users")
-    fun getPost(@Query("q") keyword: String, @Query("per_page") post2: Int) : Call<UsersListJSON>
+    fun getPost(@Query("q") keyword: String, @Query("per_page") post2: Int): Call<UsersListJSON>
 }
 
-interface UserData{
+interface UserData {
     @Headers("Authorization: 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")
     @GET("users/{id}")
-    fun getPost(@Path("id") keyword: String) : Call<UserDetailJSON>
+    fun getPost(@Path("id") keyword: String): Call<UserDetailJSON>
 }
 
-interface UserFollower{
+interface UserFollower {
     @Headers("Authorization: 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")
     @GET("users/{id}/followers")
-    fun getPost(@Path("id") keyword: String) : Call<UserFollowersJSON>
+    fun getPost(@Path("id") keyword: String): Call<UserFollowersJSON>
 }
 
-object SearchUsersRetrofitClient{
-    private val retrofitClient: Retrofit.Builder by lazy{
+interface RateLimit {
+    @Headers("Authorization: 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")
+    @GET("rate_limit")
+    fun getPost(): Call<RateLimitJSON>
+}
+
+object SearchUsersRetrofitClient {
+    private val retrofitClient: Retrofit.Builder by lazy {
         Retrofit.Builder()
             .baseUrl(GitHubApi.DOMAIN)
             .addConverterFactory(GsonConverterFactory.create())
     }
-    val searchUsers: SearchUsers by lazy{
+    val searchUsers: SearchUsers by lazy {
         retrofitClient.build().create(SearchUsers::class.java)
     }
 }
 
-object UserDetailRetrofitClient{
-    private val retrofitClient: Retrofit.Builder by lazy{
+object UserDetailRetrofitClient {
+    private val retrofitClient: Retrofit.Builder by lazy {
         Retrofit.Builder()
             .baseUrl(GitHubApi.DOMAIN)
             .addConverterFactory(GsonConverterFactory.create())
     }
-    val userDetail: UserData by lazy{
+    val userDetail: UserData by lazy {
         retrofitClient.build().create(UserData::class.java)
     }
 }
 
-object UserFollowersRetrofitClient{
-    private val retrofitClient: Retrofit.Builder by lazy{
+object UserFollowersRetrofitClient {
+    private val retrofitClient: Retrofit.Builder by lazy {
         Retrofit.Builder()
             .baseUrl(GitHubApi.DOMAIN)
             .addConverterFactory(GsonConverterFactory.create())
     }
-    val userFollower: UserFollower by lazy{
+    val userFollower: UserFollower by lazy {
         retrofitClient.build().create(UserFollower::class.java)
+    }
+}
+
+object RateLimitRetrofitClient {
+    private val retrofitClient: Retrofit.Builder by lazy {
+        Retrofit.Builder()
+            .baseUrl(GitHubApi.DOMAIN)
+            .addConverterFactory(GsonConverterFactory.create())
+    }
+    val rateLimit: RateLimit by lazy {
+        retrofitClient.build().create(RateLimit::class.java)
     }
 }
