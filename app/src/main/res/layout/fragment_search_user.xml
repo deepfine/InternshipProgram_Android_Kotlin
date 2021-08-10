@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="activity"
             type="mjc.woo.internprojectkotlin.fragment.SearchUserFragment" />
@@ -11,7 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".fragment.SearchUserFragment">
 
         <Toolbar
@@ -45,22 +46,27 @@
                 android:layout_height="35dp"
                 android:layout_marginStart="50dp"
                 android:onClick="@{() -> activity.clickSearchBtn()}"
-                android:src="@drawable/main_search_img"/>
+                android:src="@drawable/main_search_img" />
 
         </Toolbar>
 
         <LinearLayout
+            android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-
-            <ListView
-                android:id="@+id/search_userList"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/userSearch_RecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@{activity.rateLimit}"
+                android:gravity="center"
+                android:textSize="15sp" />
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
