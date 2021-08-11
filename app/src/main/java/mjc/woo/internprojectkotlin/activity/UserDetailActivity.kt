@@ -1,15 +1,17 @@
 package mjc.woo.internprojectkotlin.activity
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import mjc.woo.internprojectkotlin.R
 import mjc.woo.internprojectkotlin.UserDetailText
-import mjc.woo.internprojectkotlin.adapter.FollowersListAdapter
+import mjc.woo.internprojectkotlin.adapter.FollowersRvAdapter
 import mjc.woo.internprojectkotlin.api.UserDetailRetrofitClient
 import mjc.woo.internprojectkotlin.api.UserFollowersRetrofitClient
 import mjc.woo.internprojectkotlin.databinding.ActivityUserdetailBinding
@@ -22,7 +24,7 @@ class UserDetailActivity : AppCompatActivity() {
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var binding: ActivityUserdetailBinding
     private var items = mutableListOf<FollowersItem>()
-    private var adapter: FollowersListAdapter? = null
+    private var adapter: FollowersRvAdapter? = null
 
     var userID: String? = null
     var srcId: Int? = null
@@ -38,12 +40,6 @@ class UserDetailActivity : AppCompatActivity() {
 
         userID = intent.getStringExtra("userId")
         userID?.let { getUserDetail(it) }
-
-        binding.followersUserList.setOnItemClickListener { _, _, position, _ ->
-            val intent = Intent(this, UserDetailActivity::class.java)
-            intent.putExtra("userId", adapter?.getItem(position))
-            startActivity(intent)
-        }
     }
 
     private fun getUserDetail(userID: String) {
@@ -79,12 +75,17 @@ class UserDetailActivity : AppCompatActivity() {
                     usersData.followers,
                     usersData.following,
                     this
-                    )
+                )
 
-                adapter = FollowersListAdapter(items, this)
-                binding.followersUserList.adapter = adapter
+                adapter = FollowersRvAdapter(items, this)
+                binding.followersRecyclerView.adapter = adapter
 
-                if(Integer.parseInt(usersData.followers) > 0){
+
+                val lm = LinearLayoutManager(applicationContext)
+                binding.followersRecyclerView.layoutManager = lm
+                binding.followersRecyclerView.setHasFixedSize(true)
+
+                if (Integer.parseInt(usersData.followers) > 0) {
                     followerVisibility = View.GONE
                 }
 
@@ -93,6 +94,7 @@ class UserDetailActivity : AppCompatActivity() {
 
         }.start()
     }
+
 
     fun favoriteBtnClick() {
         if (pref.getBoolean(userID, false)) {
@@ -104,5 +106,13 @@ class UserDetailActivity : AppCompatActivity() {
             editor.putBoolean(userID, true)
         }
         editor.apply()
+    }
+
+    companion object {
+        @JvmStatic
+        @BindingAdapter("imgSrc")
+        fun changeFavoriteImage(view: ImageView, srcId: Int) {
+            view.setImageResource(srcId)
+        }
     }
 }
