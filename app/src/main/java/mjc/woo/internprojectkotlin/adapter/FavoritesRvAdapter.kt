@@ -5,14 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import mjc.woo.internprojectkotlin.R
 import mjc.woo.internprojectkotlin.activity.UserDetailActivity
+import mjc.woo.internprojectkotlin.databinding.ListMainBinding
 import mjc.woo.internprojectkotlin.item.SearchUserItem
 
 class FavoritesRvAdapter(
@@ -23,8 +21,8 @@ class FavoritesRvAdapter(
     private val editor: SharedPreferences.Editor = pref.edit()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val view = LayoutInflater.from(activity).inflate(R.layout.list_main, parent, false)
-        return Holder(view)
+        val binding = ListMainBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return Holder(binding)
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
@@ -35,32 +33,26 @@ class FavoritesRvAdapter(
         return items.size
     }
 
-    inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val userId: TextView = itemView.findViewById(R.id.tv_id)
-        private val userName: TextView = itemView.findViewById(R.id.tv_name)
-        private val userCompany: TextView = itemView.findViewById(R.id.tv_company)
-        private val userEmail: TextView = itemView.findViewById(R.id.tv_email)
-        private val favBtn: ImageView = itemView.findViewById(R.id.btn_favorites)
-        private val userImg: ImageView = itemView.findViewById(R.id.profile_imgview)
+    inner class Holder(val binding: ListMainBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: SearchUserItem, context: Context) {
-            userId.text = item.userID
-            userName.text = activity.getString(R.string.name).plus(item.userName)
-            userCompany.text = activity.getString(R.string.company).plus(item.userCompany)
-            userEmail.text = activity.getString(R.string.email).plus(item.userEmail)
-            Glide.with(context).load(item.userImgURL).into(userImg)
+            binding.tvId.text = item.userID
+            binding.tvName.text = activity.getString(R.string.name).plus(item.userName)
+            binding.tvCompany.text = activity.getString(R.string.company).plus(item.userCompany)
+            binding.tvEmail.text = activity.getString(R.string.email).plus(item.userEmail)
+            Glide.with(context).load(item.userImgURL).into(binding.profileImgview)
 
             if (pref.getBoolean(item.userID, false))
-                favBtn.setImageResource(R.drawable.favorites_start_check)
+                binding.btnFavorites.setImageResource(R.drawable.favorites_start_check)
             else
-                favBtn.setImageResource(R.drawable.favorites_start_none)
+                binding.btnFavorites.setImageResource(R.drawable.favorites_start_none)
 
-            favBtn.setOnClickListener {
+            binding.btnFavorites.setOnClickListener {
                 if (pref.getBoolean(item.userID, false)) {
-                    favBtn.setImageResource(R.drawable.favorites_start_none)
+                    binding.btnFavorites.setImageResource(R.drawable.favorites_start_none)
                     editor.remove(item.userID)
                 } else {
-                    favBtn.setImageResource(R.drawable.favorites_start_check)
+                    binding.btnFavorites.setImageResource(R.drawable.favorites_start_check)
                     editor.putBoolean(item.userID, true)
                 }
                 editor.apply()
