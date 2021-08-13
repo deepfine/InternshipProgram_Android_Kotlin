@@ -36,23 +36,25 @@ class FollowersRvAdapter(
     inner class Holder(val binding: ListFollowersBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: FollowersItem, context: Context) {
-            binding.tvId.text = item.userID
-            Glide.with(context).load(item.userImgURL).into(binding.profileImgview)
+            binding.apply {
+                tvId.text = item.userID
+                Glide.with(context).load(item.userImgURL).into(profileImgview)
 
-            if (pref.getBoolean(item.userID, false))
-                binding.btnFavorites.setImageResource(R.drawable.favorites_start_check)
-            else
-                binding.btnFavorites.setImageResource(R.drawable.favorites_start_none)
+                if (pref.getBoolean(item.userID, false))
+                    btnFavorites.setImageResource(R.drawable.favorites_start_check)
+                else
+                    btnFavorites.setImageResource(R.drawable.favorites_start_none)
 
-            binding.btnFavorites.setOnClickListener {
-                if (pref.getBoolean(item.userID, false)) {
-                    binding.btnFavorites.setImageResource(R.drawable.favorites_start_none)
-                    editor.remove(item.userID)
-                } else {
-                    binding.btnFavorites.setImageResource(R.drawable.favorites_start_check)
-                    editor.putBoolean(item.userID, true)
+                btnFavorites.setOnClickListener {
+                    if (pref.getBoolean(item.userID, false)) {
+                        btnFavorites.setImageResource(R.drawable.favorites_start_none)
+                        editor.remove(item.userID)
+                    } else {
+                        btnFavorites.setImageResource(R.drawable.favorites_start_check)
+                        editor.putBoolean(item.userID, true)
+                    }
+                    editor.apply()
                 }
-                editor.apply()
             }
 
             itemView.setOnClickListener {
