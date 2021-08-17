@@ -36,26 +36,28 @@ class SearchUserRvAdapter(
     inner class Holder(val binding: ListMainBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: SearchUserItem, context: Context) {
-            binding.tvId.text = item.userID
-            binding.tvName.text = activity.getString(R.string.name).plus(item.userName)
-            binding.tvCompany.text = activity.getString(R.string.company).plus(item.userCompany)
-            binding.tvEmail.text = activity.getString(R.string.email).plus(item.userEmail)
-            Glide.with(context).load(item.userImgURL).into(binding.profileImgview)
+            binding.apply {
+                tvId.text = item.userID
+                tvName.text = activity.getString(R.string.name).plus(item.userName)
+                tvCompany.text = activity.getString(R.string.company).plus(item.userCompany)
+                tvEmail.text = activity.getString(R.string.email).plus(item.userEmail)
+                Glide.with(context).load(item.userImgURL).into(profileImgview)
 
-            if (pref.getBoolean(item.userID, false))
-                binding.btnFavorites.setImageResource(R.drawable.favorites_start_check)
-            else
-                binding.btnFavorites.setImageResource(R.drawable.favorites_start_none)
+                if (pref.getBoolean(item.userID, false))
+                    btnFavorites.setImageResource(R.drawable.favorites_start_check)
+                else
+                    btnFavorites.setImageResource(R.drawable.favorites_start_none)
 
-            binding.btnFavorites.setOnClickListener {
-                if (pref.getBoolean(item.userID, false)) {
-                    binding.btnFavorites.setImageResource(R.drawable.favorites_start_none)
-                    editor.remove(item.userID)
-                } else {
-                    binding.btnFavorites.setImageResource(R.drawable.favorites_start_check)
-                    editor.putBoolean(item.userID, true)
+                btnFavorites.setOnClickListener {
+                    if (pref.getBoolean(item.userID, false)) {
+                        btnFavorites.setImageResource(R.drawable.favorites_start_none)
+                        editor.remove(item.userID)
+                    } else {
+                        btnFavorites.setImageResource(R.drawable.favorites_start_check)
+                        editor.putBoolean(item.userID, true)
+                    }
+                    editor.apply()
                 }
-                editor.apply()
             }
 
             itemView.setOnClickListener {
