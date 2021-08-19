@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import mjc.woo.internprojectkotlin.other.CheckRateLimit
 import mjc.woo.internprojectkotlin.R
 import mjc.woo.internprojectkotlin.adapter.FavoritesRvAdapter
 import mjc.woo.internprojectkotlin.api.UserDetailRetrofitClient
@@ -20,6 +22,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     private lateinit var binding: FragmentFavoritesBinding
     private var adapter: FavoritesRvAdapter? = null
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,12 +30,9 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_favorites, container, false)
         val view: View = binding.root
+        binding.activity = this
 
-        val pref: SharedPreferences = requireActivity().getSharedPreferences("key", 0)
-
-        val set: MutableSet<String> = pref.all.keys
-
-        getSearchUsers(set)
+        searchUserProcess()
 
         return view
     }
@@ -43,7 +43,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
         items.clear()
 
-        Thread {
+        val thread = Thread {
             for (i in 0 until keyword.size step 1) {
                 val usersData: UserDetailJSON =
                     callUserDetail.getPost(keyword.elementAt(i)).execute().body()!!
@@ -57,6 +57,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
                     )
                 )
             }
+
             requireActivity().runOnUiThread {
                 adapter = FavoritesRvAdapter(items, requireActivity())
                 binding.favoritesRecyclerView.adapter = adapter
@@ -64,9 +65,32 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
                 val lm = LinearLayoutManager(activity)
                 binding.favoritesRecyclerView.layoutManager = lm
                 binding.favoritesRecyclerView.setHasFixedSize(true)
-            }
 
-        }.start()
+                if(adapter?.itemCount == null || adapter?.itemCount == 0){
+                    binding.tvNoFavorites.visibility = View.VISIBLE
+                    binding.favoritesRecyclerView.visibility = View.GONE
+                }else{
+                    binding.tvNoFavorites.visibility = View.GONE
+                    binding.favoritesRecyclerView.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        thread.start()
+        thread.join()
+
+        binding.invalidateAll()
+    }
+
+    fun searchUserProcess() {
+        val pref: SharedPreferences = requireActivity().getSharedPreferences("key", 0)
+        val set: MutableSet<String> = pref.all.keys
+
+        if(CheckRateLimit().checkLimit(set.size)){
+            getSearchUsers(set)
+        } else{
+            Toast.makeText(requireContext(), "검색 횟수가 부족합니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onResume() {
@@ -75,5 +99,6 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         if (adapter != null)
             adapter?.notifyDataSetChanged()
     }
+
 }
 
