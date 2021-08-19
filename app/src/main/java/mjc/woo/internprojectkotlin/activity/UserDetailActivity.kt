@@ -1,5 +1,6 @@
 package mjc.woo.internprojectkotlin.activity
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -10,7 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import mjc.woo.internprojectkotlin.R
-import mjc.woo.internprojectkotlin.UserDetailText
+import mjc.woo.internprojectkotlin.other.UserDetailText
 import mjc.woo.internprojectkotlin.adapter.FollowersRvAdapter
 import mjc.woo.internprojectkotlin.api.UserDetailRetrofitClient
 import mjc.woo.internprojectkotlin.api.UserFollowersRetrofitClient
@@ -26,10 +27,11 @@ class UserDetailActivity : AppCompatActivity() {
     private var items = mutableListOf<FollowersItem>()
     private var adapter: FollowersRvAdapter? = null
 
-    var userID: String? = null
+    private var userID: String? = null
     var srcId: Int? = null
     var followerVisibility: Int? = null
 
+    @SuppressLint("CommitPrefEdits")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_userdetail)
@@ -70,8 +72,8 @@ class UserDetailActivity : AppCompatActivity() {
                 binding.userData = UserDetailText(
                     usersData.login,
                     usersData.name,
-                    usersData.company,
-                    usersData.email,
+                    usersData.company?:getString(R.string.noData),
+                    usersData.email?:getString(R.string.noData),
                     usersData.followers,
                     usersData.following,
                     this
