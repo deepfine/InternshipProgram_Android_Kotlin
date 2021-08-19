@@ -11,37 +11,52 @@ import mjc.woo.internprojectkotlin.fragment.SearchUserFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private var fragmentA: Fragment = SearchUserFragment()
+    private var fragmentB: Fragment = FavoritesFragment()
+    private var check: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
-        replaceFragment(SearchUserFragment())
-
+        val fragmentTranction = supportFragmentManager.beginTransaction()
+        fragmentTranction.add(R.id.frameLayout, fragmentA)
+        fragmentTranction.commit()
 
         binding.bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.page_SearchUser -> {
-                    replaceFragment(SearchUserFragment())
-                    return@setOnItemSelectedListener true
+                    if(!check){
+                        val fragmentTranction1 = supportFragmentManager.beginTransaction()
+                        fragmentTranction1.show(fragmentA)
+                        fragmentA.onStart()
+                        fragmentTranction1.remove(fragmentB)
+                        fragmentTranction1.commit()
+                        check = !check
+                        return@setOnItemSelectedListener true
+                    }else{
+                        return@setOnItemSelectedListener true
+                    }
                 }
                 R.id.page_Favorites -> {
-                    replaceFragment(FavoritesFragment())
-                    return@setOnItemSelectedListener true
+                    if(check){
+                        val fragmentTranction1 = supportFragmentManager.beginTransaction()
+                        fragmentTranction1.add(R.id.frameLayout, fragmentB)
+                        fragmentTranction1.hide(fragmentA)
+                        fragmentTranction1.commit()
+                        check = !check
+                        return@setOnItemSelectedListener true
+                    }else{
+                        return@setOnItemSelectedListener true
+                    }
+
                 }
                 else -> {
                     return@setOnItemSelectedListener false
                 }
             }
         }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentTranction = supportFragmentManager.beginTransaction()
-        fragmentTranction.replace(R.id.frameLayout, fragment)
-        fragmentTranction.commit()
     }
 
 }
