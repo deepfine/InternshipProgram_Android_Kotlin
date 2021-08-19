@@ -10,7 +10,7 @@
 
         <variable
             name="userData"
-            type="mjc.woo.internprojectkotlin.UserDetailText" />
+            type="mjc.woo.internprojectkotlin.other.UserDetailText" />
     </data>
 
 

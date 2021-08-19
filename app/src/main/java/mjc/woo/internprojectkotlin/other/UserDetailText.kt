@@ -1,4 +1,4 @@
-package mjc.woo.internprojectkotlin
+package mjc.woo.internprojectkotlin.other
 
 import android.app.Activity
 import mjc.woo.internprojectkotlin.R

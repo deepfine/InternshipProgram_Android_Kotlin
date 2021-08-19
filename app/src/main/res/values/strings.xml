@@ -10,7 +10,7 @@
 
     <!--  FavoritesFragment  -->
     <string name="noFavorites">즐겨찾기가 없습니다.</string>
-    
+
     <!--  UserDetailActivity -->
     <string name="detail">상세정보</string>
     <string name="noData">결과 없음</string>
