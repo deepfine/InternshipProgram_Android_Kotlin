@@ -6,8 +6,10 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import mjc.woo.internprojectkotlin.other.CheckRateLimit
 import mjc.woo.internprojectkotlin.R
 import mjc.woo.internprojectkotlin.activity.UserDetailActivity
 import mjc.woo.internprojectkotlin.databinding.ListMainBinding
@@ -36,7 +38,7 @@ class FavoritesRvAdapter(
     inner class Holder(val binding: ListMainBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: SearchUserItem, context: Context) {
-            binding.apply{
+            binding.apply {
                 tvId.text = item.userID
                 tvName.text = activity.getString(R.string.name).plus(item.userName)
                 tvCompany.text = activity.getString(R.string.company).plus(item.userCompany)
@@ -61,9 +63,13 @@ class FavoritesRvAdapter(
             }
 
             itemView.setOnClickListener {
-                val intent = Intent(context, UserDetailActivity::class.java)
-                intent.putExtra("userId", item.userID)
-                activity.startActivity(intent)
+                if (CheckRateLimit().checkLimit(2)) {
+                    val intent = Intent(context, UserDetailActivity::class.java)
+                    intent.putExtra("userId", item.userID)
+                    activity.startActivity(intent)
+                } else {
+                    Toast.makeText(activity, "검색 횟수가 부족합니다.", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
