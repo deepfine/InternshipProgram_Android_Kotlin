@@ -19,24 +19,28 @@ class GitHubApi {
 }
 
 interface SearchUsers {
+//    @Headers("Authorization: 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")
     @Headers("Authorization: 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")
     @GET("search/users")
     fun getPost(@Query("q") keyword: String, @Query("per_page") post2: Int): Call<UsersListJSON>
 }
 
 interface UserData {
+//    @Headers("Authorization: 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")
     @Headers("Authorization: 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")
     @GET("users/{id}")
     fun getPost(@Path("id") keyword: String): Call<UserDetailJSON>
 }
 
 interface UserFollower {
+//    @Headers("Authorization: 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")
     @Headers("Authorization: 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")
     @GET("users/{id}/followers")
     fun getPost(@Path("id") keyword: String): Call<UserFollowersJSON>
 }
 
 interface RateLimit {
+//    @Headers("Authorization: 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")
     @Headers("Authorization: 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")
     @GET("rate_limit")
     fun getPost(): Call<RateLimitJSON>

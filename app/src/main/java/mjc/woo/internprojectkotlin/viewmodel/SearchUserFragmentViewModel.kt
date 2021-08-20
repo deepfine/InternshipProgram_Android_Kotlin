@@ -1,4 +1,4 @@
-package mjc.woo.internprojectkotlin
+package mjc.woo.internprojectkotlin.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,8 @@ import mjc.woo.internprojectkotlin.api.RateLimitRetrofitClient
 import mjc.woo.internprojectkotlin.jsonclass.RateLimitJSON
 
 class SearchUserFragmentViewModel: ViewModel() {
-    var limit : MutableLiveData<String> = MutableLiveData()
+    var limitString : MutableLiveData<String> = MutableLiveData()
+    lateinit var limit :String
 
     fun init(){
         getLimit()
@@ -19,7 +20,9 @@ class SearchUserFragmentViewModel: ViewModel() {
             val rateLimit: RateLimitJSON =
                 callRateLimit.getPost().execute().body()!!
 
-            limit.postValue("남은 검색 횟수: ${rateLimit.resources.core.remaining}")
+            limit = rateLimit.resources.core.remaining
+
+            limitString.postValue("남은 검색 횟수: $limit")
         }.start()
     }
 

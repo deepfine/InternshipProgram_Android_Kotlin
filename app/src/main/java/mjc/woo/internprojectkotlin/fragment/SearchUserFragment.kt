@@ -1,7 +1,6 @@
 package mjc.woo.internprojectkotlin.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +10,9 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import mjc.woo.internprojectkotlin.other.CheckRateLimit
 import mjc.woo.internprojectkotlin.R
-import mjc.woo.internprojectkotlin.SearchUserFragmentViewModel
+import mjc.woo.internprojectkotlin.viewmodel.SearchUserFragmentViewModel
 import mjc.woo.internprojectkotlin.api.SearchUsersRetrofitClient
 import mjc.woo.internprojectkotlin.api.UserDetailRetrofitClient
 import mjc.woo.internprojectkotlin.databinding.FragmentSearchUserBinding
@@ -26,12 +26,10 @@ class SearchUserFragment : Fragment() {
     private lateinit var binding: FragmentSearchUserBinding
     private var adapter: SearchUserRvAdapter? = null
     private var items = mutableListOf<SearchUserItem>()
-    lateinit var viewModel: SearchUserFragmentViewModel
+    private var viewModel = SearchUserFragmentViewModel()
+    private val maxSearchCount = 5
 
     var rateLimit: String? = null
-
-    // 최대 검색 유저 수
-    private val maxSearchCount = 5
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,18 +41,16 @@ class SearchUserFragment : Fragment() {
         binding.activity = this
 
         viewModel = ViewModelProvider(this).get(SearchUserFragmentViewModel::class.java)
-
         viewModel.init()
 
-        viewModel.limit.observe(viewLifecycleOwner, {
+        viewModel.limitString.observe(viewLifecycleOwner, {
             rateLimit = it
-            Log.e("wyh", it)
             binding.invalidateAll()
         })
         return view
     }
 
-    private fun getSearchUsers(keyword: String) {
+    private fun getSearchUsers(keyword: String, viewModel: SearchUserFragmentViewModel) {
         val callUserSearch = SearchUsersRetrofitClient.searchUsers
         val callUserDetail = UserDetailRetrofitClient.userDetail
 
@@ -70,28 +66,38 @@ class SearchUserFragment : Fragment() {
                     Toast.makeText(context, "검색된 유저가 없습니다.", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                for (i in userItem.indices) {
-                    val usersData: UserDetailJSON =
-                        callUserDetail.getPost(userItem[i].login).execute().body()!!
-                    items.add(
-                        SearchUserItem(
-                            userItem[i].login,
-                            userItem[i].avatar_url,
-                            usersData.name ?: "-",
-                            usersData.email ?: "-",
-                            usersData.company ?: "-"
+                val count: Int = users.items.size
+
+                if (CheckRateLimit().checkLimit(count)) {
+                    for (i in userItem.indices) {
+                        val usersData: UserDetailJSON =
+                            callUserDetail.getPost(userItem[i].login).execute().body()!!
+                        items.add(
+                            SearchUserItem(
+                                userItem[i].login,
+                                userItem[i].avatar_url,
+                                usersData.name ?: "-",
+                                usersData.email ?: "-",
+                                usersData.company ?: "-"
+                            )
                         )
-                    )
-                }
-                requireActivity().runOnUiThread {
-                    adapter = SearchUserRvAdapter(items, requireActivity())
-                    binding.userSearchRecyclerView.adapter = adapter
+                    }
 
-                    val lm = LinearLayoutManager(context)
-                    binding.userSearchRecyclerView.layoutManager = lm
-                    binding.userSearchRecyclerView.setHasFixedSize(true)
+                    requireActivity().runOnUiThread {
+                        adapter = SearchUserRvAdapter(items, requireActivity())
+                        binding.userSearchRecyclerView.adapter = adapter
 
-                    viewModel.getLimit()
+                        val lm = LinearLayoutManager(context)
+                        binding.userSearchRecyclerView.layoutManager = lm
+                        binding.userSearchRecyclerView.setHasFixedSize(true)
+
+                        viewModel.getLimit()
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), "검색 횟수가 부족합니다.", Toast.LENGTH_SHORT).show()
+                    }
+
                 }
             }
         }.start()
@@ -108,13 +114,14 @@ class SearchUserFragment : Fragment() {
         if (keyword == "") {
             Toast.makeText(context, "검색할 아이디를 입력해주세요", Toast.LENGTH_SHORT).show()
         } else {
-            getSearchUsers(keyword)
+            getSearchUsers(keyword, viewModel)
         }
     }
 
     override fun onStart() {
         super.onStart()
 
+        viewModel.init()
         adapter?.notifyDataSetChanged()
     }
 }
