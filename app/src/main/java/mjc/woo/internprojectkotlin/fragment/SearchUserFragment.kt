@@ -63,7 +63,7 @@ class SearchUserFragment : Fragment() {
 
             if (users.total_count == 0) {
                 requireActivity().runOnUiThread {
-                    Toast.makeText(context, "검색된 유저가 없습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.suf_nothing_result), Toast.LENGTH_SHORT).show()
                 }
             } else {
                 val count: Int = users.items.size
@@ -76,9 +76,9 @@ class SearchUserFragment : Fragment() {
                             SearchUserItem(
                                 userItem[i].login,
                                 userItem[i].avatar_url,
-                                usersData.name ?: "-",
-                                usersData.email ?: "-",
-                                usersData.company ?: "-"
+                                usersData.name ?: getString(R.string.hyphen),
+                                usersData.email ?: getString(R.string.hyphen),
+                                usersData.company ?: getString(R.string.hyphen)
                             )
                         )
                     }
@@ -95,7 +95,7 @@ class SearchUserFragment : Fragment() {
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), "검색 횟수가 부족합니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.noLimit), Toast.LENGTH_SHORT).show()
                     }
 
                 }
@@ -112,7 +112,7 @@ class SearchUserFragment : Fragment() {
         // EditText에 있는 내용 가져와서 문자열 검사
         val keyword: String = binding.searchKeyWordEdt.text.toString()
         if (keyword == "") {
-            Toast.makeText(context, "검색할 아이디를 입력해주세요", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.suf_input_keyword), Toast.LENGTH_SHORT).show()
         } else {
             getSearchUsers(keyword, viewModel)
         }

@@ -68,7 +68,7 @@ class SearchUserRvAdapter(
                     intent.putExtra("userId", item.userID)
                     activity.startActivity(intent)
                 } else {
-                    Toast.makeText(activity, "검색 횟수가 부족합니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, activity.getString(R.string.noLimit), Toast.LENGTH_SHORT).show()
                 }
             }
         }
