@@ -1,12 +1,15 @@
 <resources>
     <string name="app_name">InternProjectKotlin</string>
 
-    <!--  일반 단어  -->
+    <!--  일반 문구  -->
     <string name="search">검색</string>
     <string name="favorites">즐겨찾기</string>
+    <string name="noLimit">검색 횟수가 부족합니다.</string>
 
     <!--  SearchUserFragment  -->
     <string name="suf_search_guide">여기에 입력하세요.</string>
+    <string name="suf_input_keyword">검색할 아이디를 입력해주세요</string>
+    <string name="suf_nothing_result">검색된 유저가 없습니다.</string>
 
     <!--  FavoritesFragment  -->
     <string name="noFavorites">즐겨찾기가 없습니다.</string>

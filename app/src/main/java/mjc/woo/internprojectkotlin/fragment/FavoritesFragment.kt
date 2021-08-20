@@ -51,9 +51,9 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
                     SearchUserItem(
                         usersData.login,
                         usersData.avatar_url,
-                        usersData.name ?: "-",
-                        usersData.email ?: "-",
-                        usersData.company ?: "-"
+                        usersData.name ?: getString(R.string.hyphen),
+                        usersData.email ?: getString(R.string.hyphen),
+                        usersData.company ?: getString(R.string.hyphen)
                     )
                 )
             }
@@ -89,7 +89,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         if(CheckRateLimit().checkLimit(set.size)){
             getSearchUsers(set)
         } else{
-            Toast.makeText(requireContext(), "검색 횟수가 부족합니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.noLimit), Toast.LENGTH_SHORT).show()
         }
     }
 

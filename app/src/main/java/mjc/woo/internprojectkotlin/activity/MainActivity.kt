@@ -11,8 +11,8 @@ import mjc.woo.internprojectkotlin.fragment.SearchUserFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private var fragmentA: Fragment = SearchUserFragment()
-    private var fragmentB: Fragment = FavoritesFragment()
+    private var fragmentSearchUser: Fragment = SearchUserFragment()
+    private var fragmentFavorites: Fragment = FavoritesFragment()
     private var check: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,19 +20,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        val fragmentTranction = supportFragmentManager.beginTransaction()
-        fragmentTranction.add(R.id.frameLayout, fragmentA)
-        fragmentTranction.commit()
+        val transitionMain = supportFragmentManager.beginTransaction()
+        transitionMain.add(R.id.frameLayout, fragmentSearchUser)
+        transitionMain.commit()
 
         binding.bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.page_SearchUser -> {
                     if(!check){
-                        val fragmentTranction1 = supportFragmentManager.beginTransaction()
-                        fragmentTranction1.show(fragmentA)
-                        fragmentA.onStart()
-                        fragmentTranction1.remove(fragmentB)
-                        fragmentTranction1.commit()
+                        val transitionSearchUser = supportFragmentManager.beginTransaction()
+                        transitionSearchUser.show(fragmentSearchUser)
+                        fragmentSearchUser.onStart()
+                        transitionSearchUser.remove(fragmentFavorites)
+                        transitionSearchUser.commit()
                         check = !check
                         return@setOnItemSelectedListener true
                     }else{
@@ -41,10 +41,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.page_Favorites -> {
                     if(check){
-                        val fragmentTranction1 = supportFragmentManager.beginTransaction()
-                        fragmentTranction1.add(R.id.frameLayout, fragmentB)
-                        fragmentTranction1.hide(fragmentA)
-                        fragmentTranction1.commit()
+                        val transitionFavorites = supportFragmentManager.beginTransaction()
+                        transitionFavorites.add(R.id.frameLayout, fragmentFavorites)
+                        transitionFavorites.hide(fragmentSearchUser)
+                        transitionFavorites.commit()
                         check = !check
                         return@setOnItemSelectedListener true
                     }else{
